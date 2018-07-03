@@ -1,0 +1,27 @@
+<!--
+<div class="card mb-4 box-shadow" *ngIf="!_processing">
+    <div class="card-header " style="background-color: #3f51b5;color: #eeeeee">
+        <h6>Your Subscriptions</h6>
+    </div>
+    <br>
+    <div *ngFor="let item of createRange(length); let i=index+1">i
+          <app-sub-card [id]="i">
+        </app-sub-card>
+    </div>
+
+</div>
+ -->
+<div *ngIf="_processing">
+    ...loading
+</div>
+
+<div class="hpanel m">
+    <div class="panel-heading">
+        <h1> Your Subscriptions </h1>
+    </div>
+    <div class="panel-body">
+        <div *ngFor="let i of subscriptions">
+            <app-sub-card [subscription]="i"></app-sub-card>
+        </div>
+    </div>
+</div>

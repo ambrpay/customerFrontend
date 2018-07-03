@@ -1,0 +1,8 @@
+﻿<div id="toast-container" class="toast-top-center">
+    <div *ngFor="let alert of alerts" class="animated fadeInDown {{ cssClass(alert) }}">
+        <button type="button" (click)="removeAlert(alert)" lass="toast-close-button" role="button">
+          ×
+        </button>
+        <div class="toast-message">{{alert.message}}</div>
+    </div>
+</div>

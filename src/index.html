@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/">
+    <!-- Page title -->
+    <title>Tokensale</title>
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!--<link rel="shortcut icon" type="image/ico" href="favicon.ico" />-->
+
+    <script>
+        window.addEventListener('load', function() {
+            if (typeof web3 !== 'undefined') {
+                web3js = new Web3(web3.currentProvider);
+                //web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
+                window.web3js = web3js;
+
+            } else {
+                console.log('No web3? You should consider trying MetaMask!')
+            }
+        })
+    </script>
+
+    <!-- Vendor styles -->
+    <link rel="stylesheet" href="assets/styles/font-awesome.css" />
+    <link rel="stylesheet" href="assets/styles/metisMenu.css" />
+    <link rel="stylesheet" href="assets/styles/animate.css" />
+    <link rel="stylesheet" href="assets/styles/bootstrap.css" />
+    <link rel="stylesheet" href="assets/styles/toastr.css" />
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="assets/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" />
+    <link rel="stylesheet" href="assets/fonts/pe-icon-7-stroke/css/helper.css" />
+    <link rel="stylesheet" href="assets/styles/style.css">
+
+</head>
+
+<body class="fixed-navbar sidebar-scroll">
+    <app-root></app-root>
+</body>
+
+
+</html>

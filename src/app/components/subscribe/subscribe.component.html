@@ -1,0 +1,41 @@
+<app-alert></app-alert>
+<br>
+<div class="container p-xl mb-l">
+    <div class="row">
+        <div class="col-lg-2">
+            <img height="150px" src="{{subscriptionPlan?.business?.logoLarge}}">
+        </div>
+        <div class="col-lg-8"> &nbsp;
+        </div>
+        <div class="col-lg-2">
+            &nbsp;
+        </div>
+    </div>
+    <hr>
+    <div class="row mt-xl">
+        <div class="col-lg-2">
+            &nbsp;
+        </div>
+        <div class="col-lg-8 " *ngIf="!_processing">
+            <br>
+            <h1 class="mb-xl">Add Subscription</h1>
+            <br>
+            <p class="mb-xl">
+                {{subscriptionPlan?.business?.name}}: {{subscriptionPlan?.title}} will collect {{subscriptionPlan?.price | number:'1.2-2'}} {{subscriptionPlan?.currency}} from your Smart Wallet on the first day of each billing period ({{subscriptionPlan?.interval}} days).
+                <br>You can access or retreive your funds at any time.
+            </p>
+            <br>
+            <hr>
+            <div class="text-right" *ngIf="!_processing">
+                <button type="button" class="btn btn-primary" (click)="addSubscribtion()">Add Subscription</button>
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+            &nbsp;
+        </div>
+    </div>
+</div>
+<div *ngIf="_processing">
+    ...loading
+</div>
