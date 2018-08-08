@@ -1,11 +1,11 @@
 
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { mergeMap } from 'rxjs/operators';
 
 import { CustomerActivity } from '../models/CustomerActivity';
 import { Web3Service } from './web3.service';
+import { ConfigService } from './config.service';
 
 
 @Injectable()
@@ -14,6 +14,10 @@ export class CustomerActivityService {
   private customerActivities: CustomerActivity[];
 
   private ready: EventEmitter<any> = new EventEmitter();
+  private rdy: boolean;
+  public isReady() {
+    return this.rdy;
+  }
 
   public readyEvent() {
     return this.ready;
@@ -21,10 +25,16 @@ export class CustomerActivityService {
 
 
   constructor(private http: HttpClient,
-    private web3Service: Web3Service) {
-      web3Service.readyEvent().subscribe(() => {
+    private web3Service: Web3Service,
+    private configService: ConfigService) {
+
+      if (!web3Service.isReady()) {
+        web3Service.readyEvent().subscribe(() => {
+          this.fetch();
+        });
+      } else {
         this.fetch();
-      });
+      }
   }
 
   private fetch() {
@@ -33,6 +43,8 @@ export class CustomerActivityService {
     .subscribe(customerActivities => {
       this.customerActivities = customerActivities;
       this.ready.emit();
+      this.rdy = true;
+
      });
   }
 
@@ -42,7 +54,7 @@ export class CustomerActivityService {
   }
 
   private getCustomerActivities(account): Observable<CustomerActivity[]> {
-    const url = `http://localhost:3000/api/activities/byCustomer/${account}`;
+    const url = this.configService.getConfig('server') + `/api/activities/byCustomer/${account}`;
     return this.http.get<CustomerActivity[]>(url);
   }
 
@@ -56,7 +68,7 @@ export class CustomerActivityService {
 
   private postCustomerActivity(customerActivity:  CustomerActivity) {
     const account = this.web3Service.getPrimaryAccount();
-    const url = `http://localhost:3000/api/activities/add/${account}`;
+    const url =  this.configService.getConfig('server') + `/api/activities/add/${account}`;
     return this.http.post(url, customerActivity).subscribe(() => {
       console.log('we done it');
     });

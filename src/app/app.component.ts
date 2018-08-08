@@ -1,10 +1,11 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertService } from './services/alert.service';
 import { Web3Service } from './services/web3.service';
 import { SubscriptionSmartContractService } from './services/subscriptionSmartContract.service';
 import { TokenSmartContractService } from './services/tokenSmartContract.service';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { ConfigService } from './services/config.service';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +13,15 @@ import { TokenSmartContractService } from './services/tokenSmartContract.service
 })
 export class AppComponent implements OnInit {
   title = 'app';
-
+  hostloaded = false;
   constructor(
     public translate: TranslateService,
     private activatedRoute: ActivatedRoute,
-    private alertService: AlertService,
     private _web3: Web3Service,
     private _subscriptionSmartContractService: SubscriptionSmartContractService,
     private _tokenSmartContractService: TokenSmartContractService,
+    private deviceService: DeviceDetectorService,
+    private configService: ConfigService,
   ) {
     translate.addLangs(['en', 'fr']);
     translate.setDefaultLang('en');
@@ -39,10 +41,67 @@ export class AppComponent implements OnInit {
 
 
   @HostListener('window:load')
-  windowLoaded() {
+  hostLoaded() {
+    this.hostloaded = true;
+  }
+
+  getLoaded(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        console.log('waiting for funds to arrive');
+        if (this.hostloaded) {
+          resolve(true);
+        }
+       }, 300);
+    });
+  }
+  // @HostListener('window:popstate', ['$event'])
+  async windowLoaded() {
+    await this.getLoaded();
+    await this.configService.load();
+    if (!this.correctBrowser()) {
+      if (window.location.href.indexOf('wrongbrowser') === -1) {
+        window.location.href = '#/wrongbrowser';
+      }
+      return;
+    }
+
+    if (!window['web3js']) {
+      console.log(window.location.href);
+      if (window.location.href.indexOf('metamaskmissing') === -1) {
+        window.location.href = '#/metamaskmissing/' + this.getbrowser();
+      }
+      return;
+    }
+
     this._web3.connect();
+
+    if (!this._web3.isUnlocked()) {
+      console.log('is locked', window.location.href );
+      if (window.location.href.indexOf('metamaskpassword') === -1) {
+          window.location.href = '#/metamaskpassword?redirecturl=' + encodeURIComponent(window.location.href);
+      }
+
+      return;
+    }
+
     this._subscriptionSmartContractService.fetchSubscriptionManager();
     this._tokenSmartContractService.fetchContracts();
   }
 
+   correctBrowser() {
+
+    switch (this.getbrowser()) {
+      case 'chrome':
+      case 'firefox':
+      case 'opera':
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  getbrowser() {
+    return this.deviceService.getDeviceInfo().browser;
+  }
 }

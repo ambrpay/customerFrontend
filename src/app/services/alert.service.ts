@@ -3,7 +3,6 @@ import { Router, NavigationStart } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Alert, AlertType } from '../models/alert';
 import { Subject } from 'rxjs/Subject';
-import { IfObservable } from 'rxjs/observable/IfObservable';
 import { filter } from 'rxjs/operators';
 
 @Injectable()

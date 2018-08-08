@@ -38,27 +38,17 @@
         <h1> Your Funds </h1>
     </div>
     <div class="panel-body">
-        <div class="table-responsive">
-            <table cellpadding="1" cellspacing="1" class="table table-condensed table-striped">
-                <thead>
-                    <tr>
-                        <th>Subscription funds</th>
-                        <th>Local funds</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td width="50%">{{balanceWallet | number:'1.0-5'}} ETH</td>
-                        <td width="30%">{{balanceLocal | number:'1.0-5'}} ETH</td>
-                        <td width="20%">
-                            <button type="button" class="btn btn-primary" (click)="setShow('add','eth','0x0')" [disabled]="false"><i class="fa fa-plus"></i></button>
-                            <button type="button" class="btn btn-primary" (click)="setShow('withdraw','eth','0x0')" [disabled]="false"><i class="fa fa-minus"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <h3> Tokens</h3>
+        <p>You have a subscription account on the blockchain. This account acts like a wallet. Only you can access these funds, you can withdraw/top up all of it anytime.</p>
+        <p><strong>{{balanceWallet | number:'1.0-7'}} ETH</strong></p>
+        <p>Are aviable for your subscriptions</p>
+        <div>
+            <button type="button" class="btn btn-primary" (click)="setShow('add','eth',null)" [disabled]="false"><i class="fa fa-plus"></i> Top Up</button>
+            <button type="button" class="btn btn-primary" (click)="setShow('withdraw','eth',null)" [disabled]="false"><i class="fa fa-minus"></i> Withdraw</button>
+        </div>
+    </div>
+    <!--
+    <div class="panel-body">
+         <h3> Tokens</h3>
             <table cellpadding="1" cellspacing="1" class="table table-condensed table-striped">
                 <thead>
                     <tr>
@@ -78,7 +68,10 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
+
+    </div>
+    -->
+    <div class="m">
         <div [hidden]="!show('withdraw')">
             <div class="form-group">
                 <label for="name">Withdraw {{currency}}</label>
@@ -88,9 +81,10 @@
                 </div>
             </div>
             <button type="button" [disabled]="amountWithdraw<0" (click)="withdraw()" class="btn btn-primary  m-t-s">withdraw</button>
-            <button type="button" (click)="setShow('','','')" class="btn btn-link">cancel</button>
+            <button type="button" (click)="setShow('','',null)" class="btn btn-link">cancel</button>
         </div>
         <div [hidden]="!show('add')">
+            <p>On your MetaMask you currently have {{balanceLocal | number:'1.0-5'}} ETH to top up your subscription account</p>
             <div class="form-group">
                 <label for="name">Top up {{currency}}</label>
                 <input type="number" required placeholder="How much?" class="form-control" [(ngModel)]="amountAdd" #amountA="ngModel" />
@@ -99,18 +93,20 @@
                 </div>
             </div>
             <button type="button" [disabled]="amountAdd<0" (click)="add()" class="btn btn-primary m-t-s">add</button>
-            <button type="button" (click)="setShow('','','')" class="btn btn-link">cancel</button>
-        </div>
-        <div [hidden]="!show('allowance')">
-            <div class="form-group">
-                <label for="name">Allow access to {{currency}}</label>
-                <input type="number" required placeholder="How much?" class="form-control" [(ngModel)]="amountAdd" #amountA="ngModel" />
-                <div *ngIf="(amountA.dirty || amountA?.touched) && amountA?.errors" class="invalid-feedback">
-                    <div *ngIf="amountA?.errors?.required">Amount is required</div>
-                </div>
-            </div>
-            <button type="button" [disabled]="amountAdd<0" (click)="setAllowance()" class="btn btn-primary m-t-s">add</button>
-            <button type="button" (click)="setShow('','','')" class="btn btn-link">cancel</button>
+            <button type="button" (click)="setShow('','',null)" class="btn btn-link">cancel</button>
         </div>
     </div>
+    <!--
+    <div [hidden]="!show('allowance')">
+        <div class="form-group">
+            <label for="name">Allow access to {{currency}}</label>
+            <input type="number" required placeholder="How much?" class="form-control" [(ngModel)]="amountAdd" #amountA="ngModel" />
+            <div *ngIf="(amountA.dirty || amountA?.touched) && amountA?.errors" class="invalid-feedback">
+                <div *ngIf="amountA?.errors?.required">Amount is required</div>
+            </div>
+        </div>
+        <button type="button" [disabled]="amountAdd<0" (click)="setAllowance()" class="btn btn-primary m-t-s">add</button>
+        <button type="button" (click)="setShow('','',null)" class="btn btn-link">cancel</button>
+    </div>
+    -->
 </div>

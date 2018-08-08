@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/customer">
+    <!-- Page title -->
+    <title>Tokensale</title>
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!--<link rel="shortcut icon" type="image/ico" href="favicon.ico" />-->
+    <script>
+        window.addEventListener('load', function() {
+            if (typeof web3 !== 'undefined') {
+                web3js = new Web3(web3.currentProvider);
+                //web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
+                window.web3js = web3js;
+
+            } else {
+                console.log('No web3? You should consider trying MetaMask!')
+            }
+        })
+    </script>
+    <!-- Vendor styles -->
+    <link rel="stylesheet" href="customer/assets/styles/font-awesome.css" />
+    <link rel="stylesheet" href="customer/assets/styles/metisMenu.css" />
+    <link rel="stylesheet" href="customer/assets/styles/animate.css" />
+    <link rel="stylesheet" href="customer/assets/styles/bootstrap.css" />
+    <link rel="stylesheet" href="customer/assets/styles/toastr.css" />
+    <!-- App styles -->
+    <link rel="stylesheet" href="customer/assets/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" />
+    <link rel="stylesheet" href="customer/assets/fonts/pe-icon-7-stroke/css/helper.css" />
+    <link rel="stylesheet" href="customer/assets/styles/style.css">
+    <link href="customer/styles.80a941259e32d83a86b0.bundle.css" rel="stylesheet" />
+</head>
+
+<body class="fixed-navbar sidebar-scroll">
+    <app-root></app-root>
+    <script type="text/javascript" src="customer/inline.318b50c57b4eba3d437b.bundle.js"></script>
+    <script type="text/javascript" src="customer/polyfills.b6b2cd0d4c472ac3ac12.bundle.js"></script>
+    <script type="text/javascript" src="customer/main.c53701b46892faafb12e.bundle.js"></script>
+</body>
+
+</html>

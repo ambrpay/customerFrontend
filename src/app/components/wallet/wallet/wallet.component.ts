@@ -1,4 +1,4 @@
-import { Component, Input, NgZone, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, Input, NgZone, CUSTOM_ELEMENTS_SCHEMA, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Web3Service } from '../../../services/web3.service';
 import { SubscriptionSmartContractService } from '../../../services/subscriptionSmartContract.service';
 import { TokenSmartContractService } from '../../../services/tokenSmartContract.service';
@@ -11,32 +11,42 @@ import { CustomerActivityService } from '../../../services/customerActivites.ser
   selector: 'app-wallet',
   templateUrl: './wallet.component.html'
 })
-export class WalletComponent  {
-  private balanceWallet: any;
-  private balanceLocal: any;
+export class WalletComponent implements OnInit {
 
-  private _processing = false;
-  private tokens: TokenContract[];
-  private amountAdd = 0;
-  private amountWithdraw = 0;
-  private _show  = '';
-  private currency: string;
-  private token: TokenContract;
+  public balanceWallet: any;
+  public balanceLocal: any;
+
+  public _processing = false;
+  public tokens: TokenContract[];
+  public amountAdd = 0;
+  public amountWithdraw = 0;
+  public _show  = '';
+  public currency: string;
+  public token: TokenContract;
 
    constructor(
-    private _web3: Web3Service,
     private _subscriptionSmartContractService: SubscriptionSmartContractService,
     private _tokenSmartContractService: TokenSmartContractService,
     private _customerActivityService: CustomerActivityService ) {
-      this.init();
+      console.log('I am called now on wallet!');
+  }
+
+  ngOnInit(): void {
+    console.log('on init now');
+    this.init();
   }
 
   async init() {
     this._processing = true;
-    this._tokenSmartContractService.readyEvent()
-      .subscribe(async () => {
-        this.reload();
-      });
+    if (!this._tokenSmartContractService.isReady()) {
+      this._tokenSmartContractService.readyEvent()
+        .subscribe(async () => {
+          console.log('is ready?');
+          this.reload();
+        });
+    } else {
+      this.reload();
+    }
   }
 
   async add() {
@@ -90,7 +100,7 @@ export class WalletComponent  {
   }
 
 
-  private setShow(str: string, currency: string, token: TokenContract) {
+  setShow(str: string, currency: string, token: TokenContract) {
     if (this._show === str && this.currency === currency) {
         this._show = '';
         this.currency = '';
@@ -104,7 +114,7 @@ export class WalletComponent  {
   }
 
 
-  private show(str) {
+  show(str) {
     return this._show === str;
   }
 
@@ -121,7 +131,6 @@ export class WalletComponent  {
 
   reloadwithDelay() {
     setTimeout(() => {
-      //  window.location.href = '/';
       console.log('token update');
       this._tokenSmartContractService.loadTokens();
       this.reload();

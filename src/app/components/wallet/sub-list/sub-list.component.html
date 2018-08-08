@@ -12,7 +12,7 @@
 </div>
  -->
 <div *ngIf="_processing">
-    ...loading
+    <p class="text-center"> <img src="assets/images/45.gif" height="40px" width="40px" /></p>
 </div>
 
 <div class="hpanel m">
@@ -23,5 +23,11 @@
         <div *ngFor="let i of subscriptions">
             <app-sub-card [subscription]="i"></app-sub-card>
         </div>
+        <div *ngIf="pending m">
+            <p class="text-danger text-center">Subscriptions Pending</p>
+            <p class="text-center"> <img src="assets/images/45.gif" height="40px" width="40px" /></p>
+        </div>
     </div>
+    <br>
+    <br>
 </div>

@@ -3,10 +3,11 @@ import { TokenContract } from './TokenContract';
 
 export class Subscription {
     public id: number;
+    public smartcontractId: number;
     public customer: string;
     public tokenContract: string;
     public payoutAddress: string;
-    public ambrSubscriptionPlanId: number;
+    public subscriptionPlanid: number;
     public cycleStart: Date;
     public subscriptionTimeFrame: number;
     public maxAmount: number;
@@ -15,4 +16,5 @@ export class Subscription {
     public exists: boolean;
     public subscriptionPlan: SubscriptionPlan;
     public tkn: TokenContract;
+    public isNew: boolean;
 }

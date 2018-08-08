@@ -1,37 +1,30 @@
 
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { mergeMap } from 'rxjs/operators';
-
-import { CustomerActivity } from '../models/CustomerActivity';
 import { Web3Service } from './web3.service';
+import { ConfigService } from './config.service';
 
 
 @Injectable()
 export class CustomerService {
 
-  private ready: EventEmitter<any> = new EventEmitter();
-
-  public readyEvent() {
-    return this.ready;
-  }
 
 
   constructor(private http: HttpClient,
-    private web3Service: Web3Service) {
-      web3Service.readyEvent().subscribe(() => {
-      });
+    private web3Service: Web3Service,
+    private configService: ConfigService) {
   }
 
 
-  public addUpdateCustomer(ambrSubscriptionPlanId: number, externalInfo: string): Observable<Object> {
+  public addUpdateCustomer(ambrSubscriptionPlanId: number, externalInfo: string, email: string): Observable<Object> {
     const data = {
       ethAddress : this.web3Service.getPrimaryAccount(),
       ambrSubscriptionPlanId,
       externalInfo,
+      email
     };
-    const url = `http://localhost:3000/api/customers`;
+    const url = this.configService.getConfig('server') + `/api/customers`;
     return this.http.post(url, data);
   }
 

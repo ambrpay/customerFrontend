@@ -1,5 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { COMPILER_OPTIONS } from '@angular/core/src/linker/compiler';
+import { ConfigService } from './config.service';
 
 
 
@@ -9,10 +10,22 @@ export class Web3Service {
   web3: any;
   primaryAccount: any;
 
+  constructor( private configService: ConfigService) {}
+
   private ready: EventEmitter<any> = new EventEmitter();
+
+  private rdy: boolean;
+  public isReady() {
+    return this.rdy;
+  }
+
 
   public readyEvent() {
     return this.ready;
+  }
+
+  isUnlocked() {
+    return this.web3.eth.accounts.length > 0;
   }
 
   connect() {
@@ -22,6 +35,7 @@ export class Web3Service {
         console.log('account!', acc);
         this.primaryAccount = acc;
         this.ready.emit();
+        this.rdy = true;
       });
   }
 
@@ -36,7 +50,9 @@ export class Web3Service {
   getAccount() {
 
     return new Promise((resolve, reject) => {
+
       this.web3.eth.getAccounts(( e, o) => {
+        console.log('do we have an error getting accounts?', e);
         return resolve(o[0]);
        });
     });
@@ -111,6 +127,18 @@ export class Web3Service {
     });
   }
 
+  isRobsten(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.web3.version.getNetwork((err, netId) => {
+        console.log('network id', netId);
+        if (netId - 3  === 0) {
+          resolve(true);
+        } else {
+           resolve(false);
+        }
+      });
+    });
+  }
 
 
 }

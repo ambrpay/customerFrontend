@@ -12,18 +12,22 @@ import { Web3Service } from '../../../services/web3.service';
   templateUrl: './activity.component.html'
 })
 export class ActivityComponent  {
-  private customerActivities: CustomerActivity[] = [];
-  private _processing = false;
-  private issuers: any;
+  public customerActivities: CustomerActivity[] = [];
+  public _processing = false;
+  public issuers: any;
 
   constructor(
     private customerActivityService: CustomerActivityService) {
-      this.customerActivityService.readyEvent()
-      .subscribe(() => {
-        console.log('gotten ready for  activites');
+      if (!customerActivityService.isReady()) {
+        this.customerActivityService.readyEvent()
+        .subscribe(() => {
+          console.log('gotten ready for  activites');
+          this.customerActivities = this.customerActivityService.getActivities();
+          console.log('have activitites', this.customerActivities);
+        });
+      } else {
         this.customerActivities = this.customerActivityService.getActivities();
-        console.log('have activitites', this.customerActivities);
-      });
+      }
     }
 
 
@@ -39,6 +43,8 @@ export class ActivityComponent  {
           return `You set the subscription wallets allowance to ${obj.amount} ${obj.currency} for future payments`;
         }  case 'PAYED': {
           return `You payed ${obj.amount} ${obj.currency} to ${obj.businessname} for ${obj.subscriptionname}`;
+        } case 'REFUNDED': {
+          return `You got refunded ${obj.amount} ${obj.currency} from ${obj.businessname} for ${obj.subscriptionname}`;
         } default: {
           return activity.entry;
         }
@@ -61,6 +67,8 @@ export class ActivityComponent  {
           return `pe-7s-upload`;
         }  case 'PAYED': {
           return `pe-7s-right-arrow`;
+        } case 'REFUNDED': {
+          return `pe-7s-left-arrow`;
         } default: {
           return '';
         }

@@ -1,7 +1,6 @@
-import { Injectable, HostListener, EventEmitter  } from '@angular/core';
+import { Injectable, EventEmitter  } from '@angular/core';
 
 import * as ERC20 from '../../../../subSmart/build/contracts/ERC20.json';
-import * as Ambr from '../../../../subSmart/build/contracts/Ambr.json';
 import { Web3Service } from './web3.service';
 import { TokenContractService } from './tokenContract.service';
 import { TokenContract } from '../models/TokenContract';
@@ -12,12 +11,14 @@ import { SubscriptionSmartContractService } from './subscriptionSmartContract.se
 @Injectable()
 export class TokenSmartContractService {
 
-  private instance: any;
 
   private tokens: TokenContract[];
 
-  private userAddress  = '0x47D61767f6893b435AB48Da7acA93A22A912B3fF';
   private ready: EventEmitter<any> = new EventEmitter();
+  private rdy: boolean;
+  public isReady() {
+    return this.rdy;
+  }
 
   constructor(
     private web3Service: Web3Service,
@@ -31,6 +32,7 @@ export class TokenSmartContractService {
       this.tokens = tkns;
       this.loadTokens();
       this.ready.emit(null);
+      this.rdy = true;
     });
   }
 
@@ -38,8 +40,9 @@ export class TokenSmartContractService {
     this.tokens.forEach(async (tkn) => {
 
       try {
+        const acc = await this.web3Service.getPrimaryAccount();
         const instance  = await this.web3Service.fetchContractInstance(tkn.address, ERC20);
-        tkn.balance = await this.balanceOf(instance, this.userAddress);
+        tkn.balance = await this.balanceOf(instance, acc);
         tkn.balanceWallet = await this.subscriptionContractService.getTokenBalance(tkn.address);
       } catch (err) {
         console.log(err);
@@ -65,12 +68,13 @@ export class TokenSmartContractService {
   }
 
   public async setAllowance(contractAddress: any, amount: number ) {
+    const acc = await this.web3Service.getPrimaryAccount();
     const to  = this.subscriptionContractService.getContractAddress();
     const value = this.web3Service.getWeb3().toWei(amount);
     const instance = await this.web3Service.fetchContractInstance(contractAddress, ERC20);
     return await new Promise<number>((resolve, reject) => {
       console.log(instance.address);
-      instance.approve(to, value, {from: this.userAddress}, (e, o) => {
+      instance.approve(to, value, {from: acc}, (e, o) => {
         console.log( e, o);
         if (e) { reject(e); }
         resolve();

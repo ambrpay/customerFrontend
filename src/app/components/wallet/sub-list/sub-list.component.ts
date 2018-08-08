@@ -11,25 +11,27 @@ import { Subscription } from '../../../models/Subscription';
 })
 export class SubListComponent  {
 
-  private subscriptions: Subscription[];
-  private _processing = false;
-  private all: number[];
+  public subscriptions: Subscription[];
+  public _processing = false;
+  public pending = false;
+  public all: number[];
+
 
   constructor(
     private subscriptionService: SubscriptionService) {
     this._processing = true;
-    subscriptionService.readyEvent().subscribe( (data: any) => {
-      console.log('got the ready signal!');
+    if (!subscriptionService.isReady()) {
+      subscriptionService.readyEvent().subscribe( (data: any) => {
+        this.reloadInfos();
+      });
+    } else {
       this.reloadInfos();
-    });
+    }
   }
-
 
   async reloadInfos() {
     this.subscriptions = this.subscriptionService.getSubscriptions();
     this._processing = false;
   }
-
-
 
 }

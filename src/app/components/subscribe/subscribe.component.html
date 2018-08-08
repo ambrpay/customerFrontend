@@ -1,6 +1,25 @@
 <app-alert></app-alert>
-<br>
-<div class="container p-xl mb-l">
+<div class="row mt-xl" *ngIf="!isRobsten && isRobstenMode">
+    <div class="col-lg-2">
+        &nbsp;
+    </div>
+    <div class="col-lg-8 " *ngIf="!_processing">
+        <br>
+        <h1 class="mb-xl">Join the testnet first!</h1>
+        <br>
+        <p class="mb-xl">
+            plase switch to robsten network to test the subscription system. <br> To do this open MetaMask, its the little fox next to your url bar
+        </p>
+        <p></p>
+        <div class="text-center">
+            <img width="250px" src="assets/images/robsten.png">
+        </div>
+    </div>
+    <div class="col-lg-2">
+        &nbsp;
+    </div>
+</div>
+<div class="container p-xl mb-l" *ngIf="(isRobsten && isRobstenMode) || !isRobstenMode">
     <div class="row">
         <div class="col-lg-2">
             <img height="150px" src="{{subscriptionPlan?.business?.logoLarge}}">
@@ -21,13 +40,21 @@
             <h1 class="mb-xl">Add Subscription</h1>
             <br>
             <p class="mb-xl">
-                {{subscriptionPlan?.business?.name}}: {{subscriptionPlan?.title}} will collect {{subscriptionPlan?.price | number:'1.2-2'}} {{subscriptionPlan?.currency}} from your Smart Wallet on the first day of each billing period ({{subscriptionPlan?.interval}} days).
+                {{subscriptionPlan?.business?.name}}: {{subscriptionPlan?.title}} will collect {{subscriptionPlan?.price | number:'1.2-2'}} {{subscriptionPlan?.currency}} (~ {{ aproxPrice | number:'1.2-2'}} {{currency}}) from your Smart Wallet on the first day of each
+                billing period ({{subscriptionPlan?.interval}} days).
                 <br>You can access or retreive your funds at any time.
             </p>
+            <p>You currently have: {{amount}} ETH on your MetaMask account</p>
+            <p class="text-danger" *ngIf="amount<0.0001">You need to have some ether on your account in order to subscribe!</p>
+            <br>
+            <div *ngIf="isRobstenMode && amount<0.0001">
+                <p class="text-danger">We are fetching ether from the Robsten Test network this might take about 30-60 seconds</p>
+                <p class="text-center"> <img src="assets/images/45.gif" height="40px" width="40px" /></p>
+            </div>
             <br>
             <hr>
             <div class="text-right" *ngIf="!_processing">
-                <button type="button" class="btn btn-primary" (click)="addSubscribtion()">Add Subscription</button>
+                <button [disabled]="amount<0.0001" type="button" class="btn btn-primary" (click)="addSubscribtion()">Add Subscription</button>
             </div>
 
         </div>
@@ -37,5 +64,5 @@
     </div>
 </div>
 <div *ngIf="_processing">
-    ...loading
+    <p class="text-center"> <img src="assets/images/45.gif" height="40px" width="40px" /></p>
 </div>

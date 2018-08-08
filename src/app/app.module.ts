@@ -27,10 +27,16 @@ import { SubscriptionService } from './services/subscription.service';
 import { SubCardComponent } from './components/wallet/sub-list/sub-card/sub-card.component';
 import { PayInChannelService } from './services/payinchannel.service';
 import { SubscribeComponent } from './components/subscribe/subscribe.component';
-import { CustomerActivity } from './models/CustomerActivity';
 import { ActivityComponent } from './components/wallet/activity/activity.component';
 import { CustomerActivityService } from './services/customerActivites.service';
 import { CustomerService } from './services/customer.service';
+import { MetamaskMissingComponent } from './components/metamaskmissing/metamaskmissing.component';
+import { DeviceDetectorModule } from 'ngx-device-detector';
+import { WrongBrowserComponent } from './components/wrongbrowser/wrongbrowser.component';
+import { MetamaskPasswordComponent } from './components/metamaskpassword/metamaskpassword.component';
+import { RateService } from './services/rate.service';
+import { ConfigService } from './services/config.service';
+import { RobstenFaucetService } from './services/robstenFaucet.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -48,6 +54,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     ActivityComponent,
     SubCardComponent,
     SubscribeComponent,
+    MetamaskMissingComponent,
+    WrongBrowserComponent,
+    MetamaskPasswordComponent,
     ERC20Validator,
     BTCValidator,
   ],
@@ -59,6 +68,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     CustomFormsModule,
     ClipboardModule,
     ReactiveFormsModule,
+    DeviceDetectorModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -76,7 +86,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     CustomerService,
     SubscriptionService,
     PayInChannelService,
+    RobstenFaucetService,
+    ConfigService,
     CustomerActivityService,
+    RateService,
     AlertService,
   ],
   bootstrap: [AppComponent]

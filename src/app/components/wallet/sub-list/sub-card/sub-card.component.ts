@@ -8,21 +8,22 @@ import { SubscriptionSmartContractService } from '../../../../services/subscript
 })
 export class SubCardComponent  {
 
-  private sub: Subscription;
+  public sub: Subscription;
   constructor(private subscriptionSmartContractService: SubscriptionSmartContractService) { }
 
   @Input()
   set subscription(subscription: Subscription) {
     this.sub = subscription;
+    console.log('got the sub!', this.sub);
   }
 
   private async deactivate() {
-    await this.subscriptionSmartContractService.deactivateSubscription(this.sub.id);
+    await this.subscriptionSmartContractService.deactivateSubscription(this.sub.smartcontractId);
     this.sub.approved = false;
   }
 
   private async activate() {
-    await this.subscriptionSmartContractService.activateSubscription(this.sub.id);
+    await this.subscriptionSmartContractService.activateSubscription(this.sub.smartcontractId);
     this.sub.approved = true;
   }
 
