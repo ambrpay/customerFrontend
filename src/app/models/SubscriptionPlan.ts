@@ -11,5 +11,4 @@ export class SubscriptionPlan {
     public interval: number;
     public businessid: number;
     public business: Business;
-    public subscriptions: Subscription[];
 }

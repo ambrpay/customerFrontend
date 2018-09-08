@@ -1,6 +1,4 @@
-import { Component, Input, NgZone } from '@angular/core';
-import { SubscriptionSmartContractService } from '../../../services/subscriptionSmartContract.service';
-import { SubscriptionService } from '../../../services/subscription.service';
+import { Component, Input } from '@angular/core';
 import { Subscription } from '../../../models/Subscription';
 
 
@@ -16,22 +14,9 @@ export class SubListComponent  {
   public pending = false;
   public all: number[];
 
-
-  constructor(
-    private subscriptionService: SubscriptionService) {
-    this._processing = true;
-    if (!subscriptionService.isReady()) {
-      subscriptionService.readyEvent().subscribe( (data: any) => {
-        this.reloadInfos();
-      });
-    } else {
-      this.reloadInfos();
-    }
-  }
-
-  async reloadInfos() {
-    this.subscriptions = this.subscriptionService.getSubscriptions();
-    this._processing = false;
+  @Input()
+  set subs(subs: Subscription[]) {
+    this.subscriptions = subs;
   }
 
 }

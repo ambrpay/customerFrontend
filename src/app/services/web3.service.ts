@@ -20,7 +20,7 @@ export class Web3Service {
   }
 
 
-  public readyEvent() {
+  public readyEvent():  EventEmitter<any> {
     return this.ready;
   }
 
@@ -36,6 +36,7 @@ export class Web3Service {
         this.primaryAccount = acc;
         this.ready.emit();
         this.rdy = true;
+        console.log('web3 is ready');
       });
   }
 

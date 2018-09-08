@@ -25,12 +25,21 @@ export class MetamaskMissingComponent  {
   };
 
   public active;
+  public redirectURL;
 
   constructor(private activatedRoute: ActivatedRoute) {
     this.activatedRoute.params.subscribe((params: Params) => {
       const browser = params['browser'];
       this.active = this.browserMap[browser];
       console.log(browser);
+      this.redirectURL = decodeURIComponent(this.activatedRoute.snapshot.queryParams['rDir']);
+      console.log(this.redirectURL);
+      if (window['web3js']) {
+        window.location.href = this.redirectURL;
+      }
+      // setTimeout(() => {
+      //
+      // }, 10000);
     });
   }
 

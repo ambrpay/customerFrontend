@@ -51,8 +51,6 @@ export class SubscriptionSmartContractService {
 
 
   public async addSubscription( payoutAddress: string,
-    ambrSubscriptionPlanId: number,
-    tokenContract: string,
     subscriptionTimeFrame: number,
     maxAmount: number,
     topupAmount: number)  {
@@ -61,21 +59,17 @@ export class SubscriptionSmartContractService {
     maxAmount = this.web3Service.getWeb3().toWei(maxAmount);
     topupAmount = this.web3Service.getWeb3().toWei(topupAmount);
     console.log(payoutAddress,
-      ambrSubscriptionPlanId,
-      tokenContract,
       subscriptionTimeFrame,
       topupAmount,
       maxAmount, 'how we call the contract.');
     return await new Promise<number>((resolve, reject) => {
         this.instance.addSubscription( payoutAddress,
-        ambrSubscriptionPlanId,
-        tokenContract,
         subscriptionTimeFrame,
         maxAmount,
         {value: topupAmount , gas: 500000, from: acc },
         (e, res) => {
           if (e) { reject(e); }
-          resolve();
+          resolve(res);
         });
     });
   }

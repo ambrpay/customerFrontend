@@ -1,13 +1,10 @@
 
 
 export class CustomerActivity  {
-  public id: number;
-  public customerid: number;
-  public entry: string;
-  public createdAt: Date;
-  public deleted: boolean;
-
-
+  public iNr: number;
+  public sWallet: string;
+  public sActivity: string;
+  public dtCreated: Date;
 
 }
 

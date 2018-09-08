@@ -3,7 +3,6 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Web3Service } from './services/web3.service';
 import { SubscriptionSmartContractService } from './services/subscriptionSmartContract.service';
-import { TokenSmartContractService } from './services/tokenSmartContract.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { ConfigService } from './services/config.service';
 
@@ -14,12 +13,12 @@ import { ConfigService } from './services/config.service';
 export class AppComponent implements OnInit {
   title = 'app';
   hostloaded = false;
+  rdir;
   constructor(
     public translate: TranslateService,
     private activatedRoute: ActivatedRoute,
     private _web3: Web3Service,
     private _subscriptionSmartContractService: SubscriptionSmartContractService,
-    private _tokenSmartContractService: TokenSmartContractService,
     private deviceService: DeviceDetectorService,
     private configService: ConfigService,
   ) {
@@ -36,6 +35,7 @@ export class AppComponent implements OnInit {
       }
       const defLang = lang.match(/en|fr/) ? lang : 'en';
       this.translate.use(defLang);
+
     });
   }
 
@@ -57,6 +57,8 @@ export class AppComponent implements OnInit {
   }
   // @HostListener('window:popstate', ['$event'])
   async windowLoaded() {
+    this.rdir  = decodeURIComponent(this.activatedRoute.snapshot.queryParams['rdir']);
+    console.log('this is rdir', this.rdir);
     await this.getLoaded();
     await this.configService.load();
     if (!this.correctBrowser()) {
@@ -69,13 +71,17 @@ export class AppComponent implements OnInit {
     if (!window['web3js']) {
       console.log(window.location.href);
       if (window.location.href.indexOf('metamaskmissing') === -1) {
-        window.location.href = '#/metamaskmissing/' + this.getbrowser();
+        window.location.href = '#/metamaskmissing/' + this.getbrowser() + '?rdir=' + encodeURIComponent(window.location.href);
       }
+      return;
+    }
+    if (this.rdir !== 'undefined') {
+      console.log('found rdir!!!!!!', this.rdir);
+      window.location.href = this.rdir;
       return;
     }
 
     this._web3.connect();
-
     if (!this._web3.isUnlocked()) {
       console.log('is locked', window.location.href );
       if (window.location.href.indexOf('metamaskpassword') === -1) {
@@ -84,9 +90,7 @@ export class AppComponent implements OnInit {
 
       return;
     }
-
     this._subscriptionSmartContractService.fetchSubscriptionManager();
-    this._tokenSmartContractService.fetchContracts();
   }
 
    correctBrowser() {

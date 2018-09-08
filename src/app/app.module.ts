@@ -16,19 +16,16 @@ import { AlertService } from './services/alert.service';
 import { HeaderComponent } from './components/common/header/header.component';
 import { CustomFormsModule } from 'ng4-validators';
 import { SubscriptionSmartContractService } from './services/subscriptionSmartContract.service';
-import { TokenSmartContractService } from './services/tokenSmartContract.service';
+
 import { Web3Service } from './services/web3.service';
-import { TokenContractService } from './services/tokenContract.service';
 import { LayoutComponent } from './components/wallet/layout.component';
 import { WalletComponent } from './components/wallet/wallet/wallet.component';
 import { SubListComponent } from './components/wallet/sub-list/sub-list.component';
 import { SubscriptionPlanService } from './services/subscriptionPlan.service';
 import { SubscriptionService } from './services/subscription.service';
 import { SubCardComponent } from './components/wallet/sub-list/sub-card/sub-card.component';
-import { PayInChannelService } from './services/payinchannel.service';
 import { SubscribeComponent } from './components/subscribe/subscribe.component';
 import { ActivityComponent } from './components/wallet/activity/activity.component';
-import { CustomerActivityService } from './services/customerActivites.service';
 import { CustomerService } from './services/customer.service';
 import { MetamaskMissingComponent } from './components/metamaskmissing/metamaskmissing.component';
 import { DeviceDetectorModule } from 'ngx-device-detector';
@@ -79,16 +76,12 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: [
     SubscriptionSmartContractService,
-    TokenSmartContractService,
     Web3Service,
-    TokenContractService,
     SubscriptionPlanService,
     CustomerService,
     SubscriptionService,
-    PayInChannelService,
     RobstenFaucetService,
     ConfigService,
-    CustomerActivityService,
     RateService,
     AlertService,
   ],

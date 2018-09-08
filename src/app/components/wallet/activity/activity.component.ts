@@ -1,5 +1,4 @@
 import { Component, Input, NgZone, HostListener } from '@angular/core';
-import { CustomerActivityService } from '../../../services/customerActivites.service';
 import { CustomerActivity } from '../../../models/CustomerActivity';
 import { SubscriptionService } from '../../../services/subscription.service';
 import { SubscriptionSmartContractService } from '../../../services/subscriptionSmartContract.service';
@@ -16,24 +15,15 @@ export class ActivityComponent  {
   public _processing = false;
   public issuers: any;
 
-  constructor(
-    private customerActivityService: CustomerActivityService) {
-      if (!customerActivityService.isReady()) {
-        this.customerActivityService.readyEvent()
-        .subscribe(() => {
-          console.log('gotten ready for  activites');
-          this.customerActivities = this.customerActivityService.getActivities();
-          console.log('have activitites', this.customerActivities);
-        });
-      } else {
-        this.customerActivities = this.customerActivityService.getActivities();
-      }
-    }
 
+  @Input()
+  set activities(activites: CustomerActivity[]) {
+    this.customerActivities = activites;
+  }
 
   public getText(activity: CustomerActivity) {
     try {
-      const obj = JSON.parse(activity.entry);
+      const obj = JSON.parse(activity.sActivity);
       switch (obj.type) {
         case 'TOPUP': {
             return `You toped up your account with ${obj.amount} ${obj.currency}`;
@@ -46,18 +36,18 @@ export class ActivityComponent  {
         } case 'REFUNDED': {
           return `You got refunded ${obj.amount} ${obj.currency} from ${obj.businessname} for ${obj.subscriptionname}`;
         } default: {
-          return activity.entry;
+          return activity.sActivity;
         }
       }
     } catch (e) {
       console.log(e);
-      return activity.entry;
+      return activity.sActivity;
     }
   }
 
   public getSymbol(activity: CustomerActivity) {
     try {
-      const obj = JSON.parse(activity.entry);
+      const obj = JSON.parse(activity.sActivity);
       switch (obj.type) {
         case 'TOPUP': {
             return `pe-7s-upload`;
@@ -75,7 +65,7 @@ export class ActivityComponent  {
       }
     } catch (e) {
       console.log(e);
-      return activity.entry;
+      return activity.sActivity;
     }
   }
 }

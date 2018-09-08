@@ -20,13 +20,14 @@ export class MetamaskPasswordComponent  {
     this.redirectURL = decodeURIComponent(this.activatedRoute.snapshot.queryParams['redirecturl']);
     console.log(this.redirectURL);
     this.intervall = IntervalObservable.create(300);
-    this.intervall
+    const subscription = this.intervall
     .subscribe(() => {
       console.log('are we unlocked?');
       if (web3Service.isUnlocked()) {
         web3Service.connect();
         console.log('we are now unlocked');
         window.location.href = this.redirectURL;
+        subscription.unsubscribe();
       }
     });
   }

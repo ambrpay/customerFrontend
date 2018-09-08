@@ -1,21 +1,20 @@
-<div class="row p-xs m-t-sm m-b-xsm" [ngClass]="{'deactivated-sub': !sub?.approved }">
+<div class="row p-xs m-t-sm m-b-xsm" [ngClass]="{'deactivated-sub': sub.subscriptionStatus == 'DEACTIVATED' }">
     <div class="col-lg-1">
-        <img class="rounded-circle m-r" height="40px" width="40px" [src]="sub.subscriptionPlan?.business?.logoSmall">
+        <img class="rounded-circle m-r" height="40px" width="40px" [src]="sub.companyLogoSmall">
     </div>
     <div class="col-lg-3">
-        <a [href]="sub.subscriptionPlan?.business?.website" target="blank">{{sub.subscriptionPlan?.business?.name}}</a>: {{sub.subscriptionPlan?.title}}
-        <br> {{sub.subscriptionPlan?.price | number:'1.2-2' }} {{sub.subscriptionPlan?.currency}} per {{sub.subscriptionPlan?.interval}} days
+        <a [href]="sub.companyWebsite" target="blank">{{sub.companyName}}</a>: {{sub.subscriptionName}}
+        <br> {{sub.subscriptionPlanPrice | number:'1.2-2' }} {{sub.subscriptionPlanCurrency}} per {{sub.subscriptionPlanCycle}} days
     </div>
     <div class="col-lg-3">
-        Next payment:
-        <div *ngIf="sub.approved">{{sub.cycleStart | date: 'dd.MM.yy hh:mm'}}</div>
-        <div *ngIf="!sub.approved">no next payment</div>
+        last payment:
+        <div>{{sub.subscriptionLastPayment | date: 'dd.MM.yy hh:mm'}}</div>
     </div>
     <div class="col-lg-4">
-        this cycle payed: {{sub.withdrawnAmount | number:'1.1-4' }} {{sub.tkn?.symbol}} of max {{sub.maxAmount | number:'1.1-4' }} {{sub.tkn?.symbol}}
+        this cycle paid: {{sub.subscriptionWithdrawnAmount | number:'1.1-4' }} {{sub.subscriptionCurrency}} of max {{sub.subscriptionMaxAmount | number:'1.1-4' }} {{sub.subscriptionCurrency}}
     </div>
-    <div class="col-lg-1 " *ngIf="!sub.isNew">
-        <button type="button" class="btn btn-primary align-item-center" *ngIf="!sub.approved" (click)="activate()">Activate</button>
-        <button type="button" class="btn btn-danger align-item-center" *ngIf="sub.approved" (click)="deactivate()">Deactivate</button>
+    <div class="col-lg-1 " *ngIf="sub.subscriptionStatus != 'PENDING'">
+        <button type="button" class="btn btn-primary align-item-center" *ngIf="sub.subscriptionStatus == 'DEACTIVATED'" (click)="activate()">Activate</button>
+        <button type="button" class="btn btn-danger align-item-center" *ngIf="sub.subscriptionStatus == 'ACTIVE'" (click)="deactivate()">Deactivate</button>
     </div>
 </div>

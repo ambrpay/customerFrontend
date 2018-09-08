@@ -1,5 +1,5 @@
 {
-    "server": "http://localhost:3000",
-    "contractAddress": "0x1977dcb3def4ce59cf0120b1889f93feeee3bdff",
+    "server": "https://ambrpay.io",
+    "contractAddress": "0x9719808c5cc72b82c0fc31b3283224bfceb0977f",
     "robstenMode": true
 }

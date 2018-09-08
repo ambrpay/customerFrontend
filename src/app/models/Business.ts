@@ -13,4 +13,5 @@ export class Business {
     public logoSmall: string;
     public logoLarge: string;
     public deleted: boolean;
+    public wallet: string;
 }

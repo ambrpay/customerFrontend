@@ -1,33 +1,3 @@
-<!-- <div class="card mb-4 box-shadow" *ngIf="!_processing">
-    <div class="card-header " style="background-color: #3f51b5;color: #eeeeee">
-        <h6>Your Subscription wallet</h6>
-    </div>
-    <div class="card-body" style="color: #222222">
-        <div style="font-size: 40px;"> {{walletBalance}} ETH</div>
-        <small class="text-muted">Avilable funds</small>
-        <hr>
-        <button type="button" class="btn btn-primary" (click)="setShow('add')" [disabled]="false"><i class="fas fa-plus"></i> Add</button>
-        <button type="button" class="btn btn-secondary" (click)="setShow('withdraw')" [disabled]="false"><i class="fas fa-minus"></i> Withdraw</button>
-        <div *ngIf="show('withdraw')">
-            <br>
-            <mat-form-field>
-                <input type="number" matInput [(ngModel)]="amount" placeholder="How much?">
-            </mat-form-field>
-            <br>
-            <button type="button" (click)="withdraw()" class="btn btn-primary">withdraw</button>
-        </div>
-        <div *ngIf="show('add')">
-            <br>
-            <mat-form-field>
-                <input type="number" matInput [(ngModel)]="amount" placeholder="How much?">
-            </mat-form-field>
-            <br>
-            <button type="button" (click)="add()" class="btn btn-primary">add</button>
-        </div>
-    </div>
-</div>
--->
-
 <div class="card mb-4 box-shadow" *ngIf="_processing">
     loading...
 </div>
@@ -46,31 +16,6 @@
             <button type="button" class="btn btn-primary" (click)="setShow('withdraw','eth',null)" [disabled]="false"><i class="fa fa-minus"></i> Withdraw</button>
         </div>
     </div>
-    <!--
-    <div class="panel-body">
-         <h3> Tokens</h3>
-            <table cellpadding="1" cellspacing="1" class="table table-condensed table-striped">
-                <thead>
-                    <tr>
-                        <th>Allowance Subscription Wallet</th>
-                        <th>held in account</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let t of tokens">
-                        <td width="50%">{{t.balanceWallet | number:'1.0-5' }} {{t.symbol}}</td>
-                        <td width="30%">{{t.balance| number:'1.0-5' }} {{t.symbol}} </td>
-                        <td width="20%">
-                            <button *ngIf="t.balanceWallet===0" type="button" class="btn btn-primary" (click)="setShow('allowance',t.symbol,t)" [disabled]="false">set</button>
-                            <button *ngIf="t.balanceWallet>0" type="button" class="btn btn-primary" (click)="revokeAllowance(t)" [disabled]="false">Revoke</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-    </div>
-    -->
     <div class="m">
         <div [hidden]="!show('withdraw')">
             <div class="form-group">
@@ -96,17 +41,5 @@
             <button type="button" (click)="setShow('','',null)" class="btn btn-link">cancel</button>
         </div>
     </div>
-    <!--
-    <div [hidden]="!show('allowance')">
-        <div class="form-group">
-            <label for="name">Allow access to {{currency}}</label>
-            <input type="number" required placeholder="How much?" class="form-control" [(ngModel)]="amountAdd" #amountA="ngModel" />
-            <div *ngIf="(amountA.dirty || amountA?.touched) && amountA?.errors" class="invalid-feedback">
-                <div *ngIf="amountA?.errors?.required">Amount is required</div>
-            </div>
-        </div>
-        <button type="button" [disabled]="amountAdd<0" (click)="setAllowance()" class="btn btn-primary m-t-s">add</button>
-        <button type="button" (click)="setShow('','',null)" class="btn btn-link">cancel</button>
-    </div>
-    -->
+
 </div>

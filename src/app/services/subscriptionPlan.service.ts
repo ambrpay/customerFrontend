@@ -12,17 +12,14 @@ export class SubscriptionPlanService {
   constructor(private http: HttpClient,
               private configService: ConfigService) {}
 
-  getSubscriptionPlans(ids: number[]): Observable<SubscriptionPlan[]> {
-    const plans = {
-      plans: ids,
-    };
-    const url = this.configService.getConfig('server') + `/api/subscriptionPlans/getplans`;
-    return this.http.post<SubscriptionPlan[]>(url, plans);
-  }
+  // getOne(businessid: number, ids: number): Observable<SubscriptionPlan> {
+  //   const url = this.configService.getConfig('server') + `/api/businesses/${businessid}/subscriptionplans/${ids}`;
+  //   return this.http.get<SubscriptionPlan>(url);
+  // }
 
-  getOne(businessid: number, ids: number): Observable<SubscriptionPlan> {
-    const url = this.configService.getConfig('server') + `/api/businesses/${businessid}/subscriptionplans/${ids}`;
-    return this.http.get<SubscriptionPlan>(url);
+  getOne(id: number): Observable<any> {
+    const url = this.configService.getConfig('server') + `/api/subscriptionPlan/${id}`;
+    return this.http.get<any>(url);
   }
 
 }
