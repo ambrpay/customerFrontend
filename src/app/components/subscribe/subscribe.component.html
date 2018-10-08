@@ -39,22 +39,57 @@
             <br>
             <h1 class="mb-xl">Add Subscription</h1>
             <br>
+            <!-- <div *ngIf="priceNotSet">
+                <div class="row mt-xl">
+                    <div class="col-lg-6">
+                        Please enter for how much you would like to subscribe: {{subscriptionPlan?.sCurrencySymbol}}
+                    </div>
+                    <div class="col-lg-6"> &nbsp;
+                    </div>
+                </div>
+            </div> -->
             <p class="mb-xl">
-                {{subscriptionPlan?.sCompanyName}}: {{subscriptionPlan?.sDesc}} will collect {{subscriptionPlan?.iPrice | number:'1.2-2'}} {{subscriptionPlan?.sCurrencySymbol}} (~ {{ aproxPrice | number:'1.2-2'}} {{currency}}) from your Smart Wallet on the first day
-                of each billing period ({{subscriptionPlan?.iDaysInterval}} days).
+                {{subscriptionPlan?.sCompanyName}}: {{subscriptionPlan?.sSubscription}} will collect
+                <span *ngIf="priceNotSet">
+                    <input type="number" id="amountID"  min="1" class="intext-form-control" [(ngModel)]="price" required #amountForm="ngModel" [ngClass]="{ 'is-invalid': amountForm.invalid }" />
+                </span>
+                <span *ngIf="!priceNotSet">
+                    {{subscriptionPlan?.iPrice | number:'1.2-2'}}
+                </span> {{subscriptionPlan?.sCurrencySymbol}} (~ {{ aproxPrice | number:'1.2-2'}} {{currency}}) from your Smart Wallet on the first day of each billing period ({{subscriptionPlan?.iDaysInterval}} days).
                 <br>You can access or retreive your funds at any time.
             </p>
             <p>You currently have: {{amount}} ETH on your MetaMask account</p>
-            <p class="text-danger" *ngIf="amount<0.0001">You need to have some ether on your account in order to subscribe!</p>
+            <p class="text-danger" *ngIf="amount<minAmount">You need to have some ether on your account in order to subscribe!</p>
             <br>
-            <div *ngIf="isRobstenMode && amount<0.0001">
+            <div *ngIf="isRobstenMode && amount<minAmount">
                 <p class="text-danger">We are fetching ether from the Robsten Test network this might take about 30-60 seconds</p>
                 <p class="text-center"> <img src="assets/images/45.gif" height="40px" width="40px" /></p>
             </div>
             <br>
             <hr>
-            <div class="text-right" *ngIf="!_processing">
-                <button [disabled]="amount<0.0001" type="button" class="btn btn-primary" (click)="addSubscribtion()">Add Subscription</button>
+            <div *ngIf="!_processing">
+                <br>
+                <div *ngIf="emailNotSet">
+                    <div class="row mt-xl">
+                        <div class="col-lg-6">
+                            Your E-mail address:
+                            <input type="text" id="emailID" class="form-control" [(ngModel)]="email" placeholder="email@domain.com" required email #emailForm="ngModel" [ngClass]="{ 'is-invalid': emailForm.invalid }" />
+                        </div>
+
+                        <div class="col-lg-6"> &nbsp;
+                        </div>
+                    </div>
+                    <br>
+                    <br> We need your email address in order to inform you about important events of about your subscripton. And to allow you to interact with your Subscription Wallet.
+                    <br>
+                </div>
+
+                <br>
+
+
+                <div class="text-right">
+                    <button [disabled]="amount<minAmount || !email || price<0.001" type="button" class="btn btn-primary" (click)="addSubscribtion()">Add Subscription</button>
+                </div>
             </div>
 
         </div>

@@ -28,8 +28,23 @@ export class SubscribeComponent  {
   public isRobstenMode: boolean;
   public amount;
   public email: string;
+  public rate: number;
   public successLink: string;
   public subscribed = false;
+  public minAmount = 0;
+  public emailNotSet = false;
+  public priceNotSet = false;
+
+
+  get price(): String {
+    return this.subscriptionPlan.iPrice;
+  }
+
+  set price(val) {
+    this.subscriptionPlan.iPrice = val;
+    this.aproxPrice = this.subscriptionPlan.iPrice * this.conversionRate;
+    this.minAmount = this.aproxPrice * 3.1;
+  }
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -47,7 +62,15 @@ export class SubscribeComponent  {
     this.email = this.activatedRoute.snapshot.queryParams['email'];
     this.successLink = this.activatedRoute.snapshot.queryParams['successLink'] || '#/';
 
-    if (!this.subscriptionPlanid || !this.externalInfo || !this.successLink || !this.email) {
+    if (!this.externalInfo) {
+      this.externalInfo = this.makeid();
+    }
+
+    if (!this.email) {
+      this.emailNotSet = true;
+    }
+
+    if (!this.subscriptionPlanid || !this.externalInfo || !this.successLink ) {
       console.log('we have an error');
       setTimeout(() => {
         this.alertService.error('The subscription is not defined properly, norhing further can be done here currently! \
@@ -67,13 +90,26 @@ export class SubscribeComponent  {
     }
   }
 
+  private makeid() {
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < 10; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
   private async fetchInfos() {
     this.isRobsten = await this.web3Service.isRobsten();
     this.isRobstenMode = this.configService.getConfig('robstenMode');
-    this.fetchAmount();
+
 
     this.subscriptionPlanService.getOne(this.subscriptionPlanid).subscribe(subscriptionPlan => {
         this.subscriptionPlan = subscriptionPlan;
+        if (this.subscriptionPlan.iPrice <= 0) {
+          this.priceNotSet = true;
+        }
         console.log( this.subscriptionPlan);
         //this.subscriptionPlan.sWallet = '0xE5e32bd821F1C7Be5C2B2bE466d4e762C803747B';
         // if (this.subscriptionService.cointainsSubscription( this.subscriptionPlanid)) {
@@ -92,7 +128,12 @@ export class SubscribeComponent  {
     .subscribe( rate => {
       console.log('we fetched rate it was' + rate);
       this.conversionRate =  1 / rate;
+      if (this.subscriptionPlan.iPrice <= 0) {
+        this.subscriptionPlan.iPrice = rate * 0.045;
+      }
       this.aproxPrice = this.subscriptionPlan.iPrice * this.conversionRate;
+      this.minAmount = this.aproxPrice * 3.1;
+      this.fetchAmount(this.minAmount);
       this._processing = false;
     });
   }
@@ -123,22 +164,22 @@ export class SubscribeComponent  {
     }
   }
 
-  async fetchAmount() {
+  async fetchAmount(minAmount) {
     this.amount = await this.web3Service.getAccountBalance();
     if (this.isRobsten && this.isRobstenMode) {
-      this.waitForFundsToArrive(0);
+      this.waitForFundsToArrive(0, minAmount);
     }
   }
 
-  async waitForFundsToArrive(i) {
+  async waitForFundsToArrive(i, minAmount) {
     this.amount = await this.web3Service.getAccountBalance();
-    if (this.amount <= 0) {
+    if (this.amount <= minAmount) {
       if ( i % 60 === 0) {
         this.robstenService.tap().subscribe(x => { console.log(x); });
       }
       setTimeout(() => {
         console.log('waiting for funds to arrive');
-        this.waitForFundsToArrive(i + 1);
+        this.waitForFundsToArrive(i + 1, minAmount);
        }, 500);
     }
   }

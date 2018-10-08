@@ -14,7 +14,7 @@ export class RateService {
 
 
   get(from: string, to: string): Observable<number> {
-    const url =  `http://ambrpay.io:3000/api/rate/${from}/${to}`;
+    const url =  this.configService.getConfig('server') + `/api/rate/${from}/${to}`;
     console.log('calling', url);
     return this.http.get<number>(url);
   }
