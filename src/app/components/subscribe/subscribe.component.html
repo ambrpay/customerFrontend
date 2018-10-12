@@ -1,4 +1,7 @@
 <app-alert></app-alert>
+<div *ngIf="_processing">
+    <p class="text-center"> <img src="assets/images/45.gif" height="40px" width="40px" /></p>
+</div>
 <div class="row mt-xl" *ngIf="!isRobsten && isRobstenMode">
     <div class="col-lg-2">
         &nbsp;
@@ -39,15 +42,6 @@
             <br>
             <h1 class="mb-xl">Add Subscription</h1>
             <br>
-            <!-- <div *ngIf="priceNotSet">
-                <div class="row mt-xl">
-                    <div class="col-lg-6">
-                        Please enter for how much you would like to subscribe: {{subscriptionPlan?.sCurrencySymbol}}
-                    </div>
-                    <div class="col-lg-6"> &nbsp;
-                    </div>
-                </div>
-            </div> -->
             <p class="mb-xl">
                 {{subscriptionPlan?.sCompanyName}}: {{subscriptionPlan?.sSubscription}} will collect
                 <span *ngIf="priceNotSet">
@@ -55,7 +49,10 @@
                 </span>
                 <span *ngIf="!priceNotSet">
                     {{subscriptionPlan?.iPrice | number:'1.2-2'}}
-                </span> {{subscriptionPlan?.sCurrencySymbol}} (~ {{ aproxPrice | number:'1.2-2'}} {{currency}}) from your Smart Wallet on the first day of each billing period ({{subscriptionPlan?.iDaysInterval}} days).
+                </span> {{subscriptionPlan?.sCurrencySymbol}}
+                <span *ngIf="subscriptionPlan?.sCurrencySymbol!='ETH'">
+                  (~ {{ aproxPrice | number:'1.2-2'}} {{currency}})
+                </span> from your Smart Wallet on the first day of each billing period ({{subscriptionPlan?.iDaysInterval}} days).
                 <br>You can access or retreive your funds at any time.
             </p>
             <p>You currently have: {{amount}} ETH on your MetaMask account</p>
@@ -113,7 +110,7 @@
             &nbsp;
         </div>
     </div>
-</div>
-<div *ngIf="_processing">
-    <p class="text-center"> <img src="assets/images/45.gif" height="40px" width="40px" /></p>
+    <div>
+        <app-howto [subscriptionPlan]="subscriptionPlan"></app-howto>
+    </div>
 </div>

@@ -34,6 +34,7 @@ export class SubscriptionService {
         sub.payoutAddress = payoutAddress;
         sub.subscriptionTimeFrame = subscriptionTimeFrame;
         sub.maxCryptoPrice = maxAmount;
+        sub.smartContractAddress = this.subscriptionSmartContractService.getContractAddress();
         sub.withdrawnCryptoAmount = 0;
         sub.status = 'PENDING';
         sub.customer = {

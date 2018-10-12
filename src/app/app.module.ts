@@ -34,6 +34,7 @@ import { MetamaskPasswordComponent } from './components/metamaskpassword/metamas
 import { RateService } from './services/rate.service';
 import { ConfigService } from './services/config.service';
 import { RobstenFaucetService } from './services/robstenFaucet.service';
+import { HowtoComponent } from './components/howto/howto.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -54,6 +55,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MetamaskMissingComponent,
     WrongBrowserComponent,
     MetamaskPasswordComponent,
+    HowtoComponent,
     ERC20Validator,
     BTCValidator,
   ],

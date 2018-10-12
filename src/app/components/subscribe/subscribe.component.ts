@@ -43,7 +43,7 @@ export class SubscribeComponent  {
   set price(val) {
     this.subscriptionPlan.iPrice = val;
     this.aproxPrice = this.subscriptionPlan.iPrice * this.conversionRate;
-    this.minAmount = this.aproxPrice * 3.1;
+    this.minAmount = this.aproxPrice * this.subscriptionPlan.iFirstMultiplier;
   }
 
   constructor(
@@ -132,7 +132,7 @@ export class SubscribeComponent  {
         this.subscriptionPlan.iPrice = rate * 0.045;
       }
       this.aproxPrice = this.subscriptionPlan.iPrice * this.conversionRate;
-      this.minAmount = this.aproxPrice * 3.1;
+      this.minAmount = this.aproxPrice * this.subscriptionPlan.iFirstMultiplier;
       this.fetchAmount(this.minAmount);
       this._processing = false;
     });
