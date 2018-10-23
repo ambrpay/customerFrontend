@@ -11,10 +11,10 @@ import { ConfigService } from '../../services/config.service';
 
 
 @Component({
-  selector: 'app-subscribe',
-  templateUrl: './subscribe.component.html'
+  selector: 'app-subscribeeth',
+  templateUrl: './subscribeETH.component.html'
 })
-export class SubscribeComponent  {
+export class SubscribeETHComponent  {
 
   public _processing = true;
   public subscriptionPlan: any;
@@ -26,6 +26,7 @@ export class SubscribeComponent  {
   public conversionRate: number;
   public isRobsten: boolean;
   public isRobstenMode: boolean;
+  public smartContractAddr: string;
   public amount;
   public email: string;
   public rate: number;
@@ -103,6 +104,7 @@ export class SubscribeComponent  {
   private async fetchInfos() {
     this.isRobsten = await this.web3Service.isRobsten();
     this.isRobstenMode = this.configService.getConfig('robstenMode');
+    this.smartContractAddr = this.configService.getConfig('contractAddress');
 
 
     this.subscriptionPlanService.getOne(this.subscriptionPlanid).subscribe(subscriptionPlan => {
@@ -111,11 +113,6 @@ export class SubscribeComponent  {
           this.priceNotSet = true;
         }
         console.log( this.subscriptionPlan);
-        //this.subscriptionPlan.sWallet = '0xE5e32bd821F1C7Be5C2B2bE466d4e762C803747B';
-        // if (this.subscriptionService.cointainsSubscription( this.subscriptionPlanid)) {
-        //   window.location.href = this.successLink;
-        //   console.log('containsSubscription');
-        // }
         this.currency = 'ETH';
         this.fetchConversionRate();
       }
@@ -140,19 +137,24 @@ export class SubscribeComponent  {
 
   async addSubscribtion() {
     this._processing = true;
-    console.log(this.subscriptionPlan.sWallet,
-      this.subscriptionPlan,
-      this.subscriptionPlan.iDaysInterval,
-      this.aproxPrice * 1.5);
+      const sub = {
+        price : this.subscriptionPlan.iPrice,
+        subscriptionPlanId : this.subscriptionPlanid,
+        payoutAddress : this.subscriptionPlan.sWallet,
+        subscriptionTimeFrame : this.subscriptionPlan.iDaysInterval,
+        maxCryptoPrice : this.aproxPrice * 1.5,
+        smartContractAddress : this.smartContractAddr,
+        withdrawnCryptoAmount : 0,
+        status : 'PENDING',
+        customer : {
+          ethAddress:  this.web3Service.getPrimaryAccount(),
+          email: this.email,
+          externalInfo: this.externalInfo
+        }
+      };
+      console.log(sub);
     try {
-      await  this.subscriptionService.addSubscription(
-        this.subscriptionPlan.sWallet,
-        this.subscriptionPlanid,
-        this.subscriptionPlan.iDaysInterval,
-        this.subscriptionPlan.iPrice,
-        this.aproxPrice * 1.5,
-        this.externalInfo,
-        this.email);
+      await this.subscriptionService.addETHSubscription(sub, this.minAmount);
         this._processing = false;
         this.subscribed = true;
         setTimeout(() => {

@@ -24,7 +24,7 @@ import { SubListComponent } from './components/wallet/sub-list/sub-list.componen
 import { SubscriptionPlanService } from './services/subscriptionPlan.service';
 import { SubscriptionService } from './services/subscription.service';
 import { SubCardComponent } from './components/wallet/sub-list/sub-card/sub-card.component';
-import { SubscribeComponent } from './components/subscribe/subscribe.component';
+import { SubscribeETHComponent } from './components/subscribe/subscribeETH.component';
 import { ActivityComponent } from './components/wallet/activity/activity.component';
 import { CustomerService } from './services/customer.service';
 import { MetamaskMissingComponent } from './components/metamaskmissing/metamaskmissing.component';
@@ -34,7 +34,11 @@ import { MetamaskPasswordComponent } from './components/metamaskpassword/metamas
 import { RateService } from './services/rate.service';
 import { ConfigService } from './services/config.service';
 import { RobstenFaucetService } from './services/robstenFaucet.service';
-import { HowtoComponent } from './components/howto/howto.component';
+
+import { SubscribeERC20Component } from './components/subscribe/subscribeERC20.component';
+import { SubscriptionSmartContractERC20Service } from './services/subscriptionSmartContractERC20.service';
+import { HowtoERC20Component } from './components/howtoERC20/howtoERC20.component';
+import { HowtoETHComponent } from './components/howtoETH/howtoETH.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -51,11 +55,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     SubListComponent,
     ActivityComponent,
     SubCardComponent,
-    SubscribeComponent,
+    SubscribeETHComponent,
+    SubscribeERC20Component,
     MetamaskMissingComponent,
     WrongBrowserComponent,
     MetamaskPasswordComponent,
-    HowtoComponent,
+    HowtoERC20Component,
+    HowtoETHComponent,
     ERC20Validator,
     BTCValidator,
   ],
@@ -78,6 +84,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: [
     SubscriptionSmartContractService,
+    SubscriptionSmartContractERC20Service,
     Web3Service,
     SubscriptionPlanService,
     CustomerService,

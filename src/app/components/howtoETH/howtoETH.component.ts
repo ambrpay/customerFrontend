@@ -3,10 +3,10 @@ import { Component,  Input } from '@angular/core';
 
 
 @Component({
-  selector: 'app-howto',
-  templateUrl: './howto.component.html'
+  selector: 'app-howtoeth',
+  templateUrl: './howtoETH.component.html'
 })
-export class HowtoComponent  {
+export class HowtoETHComponent  {
   public subPlan: any;
 
   @Input()

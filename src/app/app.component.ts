@@ -90,7 +90,7 @@ export class AppComponent implements OnInit {
 
       return;
     }
-    this._subscriptionSmartContractService.fetchSubscriptionManager();
+
   }
 
    correctBrowser() {

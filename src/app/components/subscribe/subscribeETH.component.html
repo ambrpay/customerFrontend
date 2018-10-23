@@ -45,7 +45,7 @@
             <p class="mb-xl">
                 {{subscriptionPlan?.sCompanyName}}: {{subscriptionPlan?.sSubscription}} will collect
                 <span *ngIf="priceNotSet">
-                    <input type="number" id="amountID"  min="1" class="intext-form-control" [(ngModel)]="price" required #amountForm="ngModel" [ngClass]="{ 'is-invalid': amountForm.invalid }" />
+                    <input type="number" id="amountID"  min="0.005" step="0.005" class="intext-form-control" [(ngModel)]="price" required #amountForm="ngModel" [ngClass]="{ 'is-invalid': amountForm.invalid }" />
                 </span>
                 <span *ngIf="!priceNotSet">
                     {{subscriptionPlan?.iPrice | number:'1.2-2'}}
@@ -56,7 +56,7 @@
                 <br>You can access or retreive your funds at any time.
             </p>
             <p>You currently have: {{amount}} ETH on your MetaMask account</p>
-            <p class="text-danger" *ngIf="amount<minAmount">You need to have some ether on your account in order to subscribe!</p>
+            <p class="text-danger" *ngIf="amount<minAmount">You need to have {{minAmount}} ETH on your account in order to subscribe!</p>
             <br>
             <div *ngIf="isRobstenMode && amount<minAmount">
                 <p class="text-danger">We are fetching ether from the Robsten Test network this might take about 30-60 seconds</p>
@@ -84,8 +84,9 @@
                 <br>
 
 
+
                 <div class="text-right">
-                    <button [disabled]="amount<minAmount || !email || price<0.001" type="button" class="btn btn-primary" (click)="addSubscribtion()">Add Subscription</button>
+                    When you click add subscription you will be ask by your wallet to confirm, the transcation. <button [disabled]="amount<minAmount || !email || price<0.001" type="button" class="btn btn-primary" (click)="addSubscribtion()">Add Subscription</button>
                 </div>
             </div>
 
@@ -111,6 +112,6 @@
         </div>
     </div>
     <div>
-        <app-howto [subscriptionPlan]="subscriptionPlan"></app-howto>
+        <app-howtoeth [subscriptionPlan]="subscriptionPlan"></app-howtoeth>
     </div>
 </div>

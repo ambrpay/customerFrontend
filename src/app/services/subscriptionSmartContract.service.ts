@@ -2,55 +2,20 @@ import { Injectable, EventEmitter  } from '@angular/core';
 import * as SubscriptionWallet from '../../../../subSmart/build/contracts/Ambr.json';
 import { Web3Service } from './web3.service';
 import { ConfigService } from './config.service';
+import { async } from '@angular/core/testing';
 
 
 @Injectable()
 export class SubscriptionSmartContractService {
 
-  private instance: any;
-
-  private ready: EventEmitter<any> = new EventEmitter();
-  private rdy: boolean;
-
-  public isReady() {
-    return this.rdy;
-  }
 
   constructor(
-    private web3Service: Web3Service,
-    private configService: ConfigService
+    private web3Service: Web3Service
   ) {}
 
-  async getAccount() {
-    const acc = await this.web3Service.getAccount();
-  }
 
-
-  public async fetchSubscriptionManager() {
-    this.instance = await this.web3Service.fetchContractInstance(this.getContractAddress(), SubscriptionWallet);
-    this.ready.emit(null);
-    this.rdy = true;
-  }
-
-  public getSubscriptionManager() {
-    return this.instance;
-  }
-
-  public async getTokenBalance(contractAddress: string): Promise<number> {
-    return await new Promise<number>((resolve, reject) => {
-      this.instance.getTokenBalance(contractAddress, (e, res) => {
-        if (e) { reject(e); }
-        resolve(this.web3Service.getWeb3().fromWei(res).toNumber());
-      });
-    });
-  }
-
-  public getContractAddress(): string {
-    return this.configService.getConfig('contractAddress');
-  }
-
-
-  public async addSubscription( payoutAddress: string,
+  public async addSubscription(smartContractAddr: string,
+    payoutAddress: string,
     subscriptionTimeFrame: number,
     maxAmount: number,
     topupAmount: number)  {
@@ -62,8 +27,9 @@ export class SubscriptionSmartContractService {
       subscriptionTimeFrame,
       topupAmount,
       maxAmount, 'how we call the contract.');
-    return await new Promise<number>((resolve, reject) => {
-        this.instance.addSubscription( payoutAddress,
+      return await new Promise<number>(async(resolve, reject) => {
+        const instance = await this.web3Service.fetchContractInstance(smartContractAddr, SubscriptionWallet);
+        instance.addSubscription( payoutAddress,
         subscriptionTimeFrame,
         maxAmount,
         {value: topupAmount , gas: 500000, from: acc },
@@ -74,22 +40,24 @@ export class SubscriptionSmartContractService {
     });
   }
 
-  public async activateSubscription(i: number) {
-    return await new Promise<number>((resolve, reject) => {
+  public async activateSubscription(smartContractAddr: string,i: number) {
+    return await new Promise<number>(async (resolve, reject) => {
       const acc = this.web3Service.getPrimaryAccount();
       console.log('deactivate with', acc, i);
-       this.instance.activateSubscription(i, {gas: 500000, from: acc}, (e, res) => {
+      const instance = await this.web3Service.fetchContractInstance(smartContractAddr, SubscriptionWallet);
+      instance.activateSubscription(i, {gas: 500000, from: acc}, (e, res) => {
         if (e) { reject(e); }
         resolve();
       } );
     });
   }
 
-  public async deactivateSubscription(i: number) {
-    return await new Promise<number>((resolve, reject) => {
+  public async deactivateSubscription(smartContractAddr: string, i: number) {
+    return await new Promise<number>(async (resolve, reject) => {
       const acc = this.web3Service.getPrimaryAccount();
       console.log('deactivate with', acc, i);
-      this.instance.deactivateSubscription(i, {gas: 500000, from: acc}, (e, res) => {
+      const instance = await this.web3Service.fetchContractInstance(smartContractAddr, SubscriptionWallet);
+      instance.deactivateSubscription(i, {gas: 500000, from: acc}, (e, res) => {
         if (e) { reject(e); }
        resolve();
      } );
@@ -97,21 +65,23 @@ export class SubscriptionSmartContractService {
   }
 
 
-  public async withdrawFunds(amount: any) {
+  public async withdrawFunds(smartContractAddr: string, amount: any) {
     const value = this.web3Service.getWeb3().toWei(amount);
     console.log('withdrawing', value);
-    return await new Promise<number>((resolve, reject) => {
-      this.instance.withdrawETHFunds(value, {gas: 500000}, (e, res) => {
+    return await new Promise<number>(async (resolve, reject) => {
+      const instance = await this.web3Service.fetchContractInstance(smartContractAddr, SubscriptionWallet);
+      instance.withdrawETHFunds(value, {gas: 500000}, (e, res) => {
         if (e) { reject(e); }
         resolve();
       });
     });
   }
 
-  public async getETHBalance() {
+  public async getETHBalance(smartContractAddr: string) {
     const acc =  await this.web3Service.getAccount();
-    return await new Promise<number>((resolve, reject) => {
-      this.instance.getETHBalance(acc, (e, res) => {
+    return await new Promise<number>(async (resolve, reject) => {
+      const instance = await this.web3Service.fetchContractInstance(smartContractAddr, SubscriptionWallet);
+      instance.getETHBalance(acc, (e, res) => {
         if (e) { reject(e); }
         resolve(this.web3Service.getWeb3().fromWei(res).toNumber());
       });
@@ -120,7 +90,7 @@ export class SubscriptionSmartContractService {
 
   public async getLocalETHBalance() {
     const acc =  await this.web3Service.getAccount();
-    return await new Promise<number>((resolve, reject) => {
+    return await new Promise<number>(async (resolve, reject) => {
       this.web3Service.getWeb3().eth.getBalance(acc, (e, res) => {
         console.log(res, acc);
         if (e) { reject(e); }
@@ -129,13 +99,13 @@ export class SubscriptionSmartContractService {
     });
   }
 
-  public async payETH(amount: number) {
+  public async payETH(smartContractAddr: string, amount: number) {
     const acc =  await this.web3Service.getAccount();
     const value = this.web3Service.getWeb3().toWei(amount);
-    console.log('the value', value, acc,  this.getContractAddress());
-    return await new Promise<number>((resolve, reject) => {
+    console.log('the value', value, acc,  smartContractAddr);
+    return await new Promise<number>(async (resolve, reject) => {
       console.log(value);
-      this.web3Service.getWeb3().eth.sendTransaction({ from: acc, to: this.getContractAddress(), value: value }, (e, res) => {
+      this.web3Service.getWeb3().eth.sendTransaction({ from: acc, to: smartContractAddr, value: value }, (e, res) => {
         console.log(e, res);
         if (e) { reject(e); }
         resolve();
@@ -143,7 +113,4 @@ export class SubscriptionSmartContractService {
     });
   }
 
-  public readyEvent() {
-    return this.ready;
-  }
 }

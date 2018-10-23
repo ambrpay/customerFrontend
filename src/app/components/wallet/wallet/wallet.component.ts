@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SubscriptionSmartContractService } from '../../../services/subscriptionSmartContract.service';
 import { TokenContract } from '../../../models/TokenContract';
 import { CustomerService } from '../../../services/customer.service';
+import { Web3Service } from '../../../services/web3.service';
+import { ConfigService } from '../../../services/config.service';
 
 
 @Component({
@@ -22,7 +24,9 @@ export class WalletComponent implements OnInit {
   public token: TokenContract;
 
   constructor(
+    private _web3Service: Web3Service,
     private _subscriptionSmartContractService: SubscriptionSmartContractService,
+    private _configService: ConfigService,
     private _customerService: CustomerService ) {
       console.log('I am called now on wallet!');
   }
@@ -34,17 +38,17 @@ export class WalletComponent implements OnInit {
 
   async init() {
     this._processing = true;
-    if ( this._subscriptionSmartContractService.isReady()) {
+    if ( this._web3Service.isReady()) {
       this.reload();
     } else {
-      this._subscriptionSmartContractService.readyEvent().subscribe(() => {
+      this._web3Service.readyEvent().subscribe(() => {
         this.reload();
       });
     }
   }
 
   async add() {
-    await this._subscriptionSmartContractService.payETH(this.amountAdd);
+    await this._subscriptionSmartContractService.payETH(this._configService.getConfig('contractAddress'), this.amountAdd);
     this.balanceWallet += this.amountAdd;
     this.balanceLocal -= this.amountAdd;
     this._customerService.publishCustomerActivty({
@@ -57,7 +61,8 @@ export class WalletComponent implements OnInit {
   }
 
   async withdraw() {
-    await this._subscriptionSmartContractService.withdrawFunds(this.amountWithdraw);
+    await this._subscriptionSmartContractService.withdrawFunds(this._configService.getConfig('contractAddress'), this.amountWithdraw);
+    // TODO: FIX THIS.
     this.balanceWallet -= this.amountWithdraw;
     this.balanceLocal += this.amountWithdraw;
     this._customerService.publishCustomerActivty({
@@ -89,7 +94,7 @@ export class WalletComponent implements OnInit {
 
   async reload() {
 
-    this.balanceWallet = await this._subscriptionSmartContractService.getETHBalance();
+    this.balanceWallet = await this._subscriptionSmartContractService.getETHBalance(this._configService.getConfig('contractAddress'));
     this.balanceLocal = await this._subscriptionSmartContractService.getLocalETHBalance();
     this._processing = false;
   }

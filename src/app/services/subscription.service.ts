@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Subscription } from '../models/Subscription';
 import { SubscriptionSmartContractService } from './subscriptionSmartContract.service';
-import { TokenContract } from '../models/TokenContract';
+import { SubscriptionSmartContractERC20Service } from './subscriptionSmartContractERC20.service';
 import { CustomerService } from './customer.service';
-import { Web3Service } from './web3.service';
-import { SubscriptionPlan } from '../models/SubscriptionPlan';
-import { Customer } from '../models/Customer';
+
 
 
 @Injectable()
@@ -13,52 +10,44 @@ export class SubscriptionService {
 
   constructor(
     private customerService: CustomerService,
-    private web3Service: Web3Service,
     private subscriptionSmartContractService: SubscriptionSmartContractService,
+    private subscriptionSmartContractERC20Service: SubscriptionSmartContractERC20Service,
   ) {
 
   }
 
-  public addSubscription(payoutAddress: string,
-    subscriptionPlanid: number,
-    subscriptionTimeFrame: number,
-    price: number,
-    maxAmount: number,
-    externalCustomerInfo: string,
-    email: string,
-     ) {
+  public addERC20Subscription(sub: any, allowance: number) {
+    return this.subscriptionSmartContractERC20Service.addSubscription(sub.smartContractAddress,
+      sub.tokenAddress,
+      sub.payoutAddress,
+      sub.subscriptionTimeFrame,
+      sub.maxCryptoPrice,
+      allowance).then( (o: any) => {
+        console.log('is this the hash?', o );
+        sub.transactionHash = o;
+        this.addCustomer(sub);
+      });
+  }
 
-        const sub: any = {};
-        sub.price = price;
-        sub.subscriptionPlanId = subscriptionPlanid;
-        sub.payoutAddress = payoutAddress;
-        sub.subscriptionTimeFrame = subscriptionTimeFrame;
-        sub.maxCryptoPrice = maxAmount;
-        sub.smartContractAddress = this.subscriptionSmartContractService.getContractAddress();
-        sub.withdrawnCryptoAmount = 0;
-        sub.status = 'PENDING';
-        sub.customer = {
-          ethAddress:  this.web3Service.getPrimaryAccount(),
-          email: email,
-          externalInfo: externalCustomerInfo
-        };
+  public addETHSubscription(sub: any, topUpAmount: number) {
+    return this.subscriptionSmartContractService.addSubscription(sub.smartContractAddress,
+      sub.payoutAddress,
+      sub.subscriptionTimeFrame,
+      sub.maxCryptoPrice,
+      topUpAmount).then( (o: any) => {
+        console.log('is this the hash?', o );
+        sub.transactionHash = o;
+        this.addCustomer(sub);
+      });
+  }
 
-        const topUpAmount = maxAmount * 2;
-
-        return this.subscriptionSmartContractService.addSubscription(payoutAddress,
-          subscriptionTimeFrame,
-          maxAmount,
-          topUpAmount).then( (o: any) => {
-            console.log('is this the hash?', o );
-            sub.transactionHash = o;
-            this.customerService.postSubscription(sub)
-            .subscribe((res) => {
-              console.log('result', res );
-            }, (err) => {
-              console.log(err);
-            });
-            return;
-          });
+  private addCustomer(sub) {
+    this.customerService.postSubscription(sub)
+    .subscribe((res) => {
+      console.log('result', res );
+    }, (err) => {
+      console.log(err);
+    });
   }
 
 }

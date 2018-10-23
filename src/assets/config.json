@@ -1,5 +1,6 @@
 {
     "server": "https://ambrpay.io",
     "contractAddress": "0x1e2b627911682c264f767b177f662c7a7af16171",
+    "contractAddressERC20": "0xfceb0eab8ee327ac058e167420a3ba4ef2ab81b5",
     "robstenMode": true
 }

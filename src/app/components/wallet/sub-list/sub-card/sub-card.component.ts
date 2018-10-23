@@ -18,12 +18,12 @@ export class SubCardComponent  {
   }
 
   private async deactivate() {
-    await this.subscriptionSmartContractService.deactivateSubscription(this.sub.smartContractId);
+    await this.subscriptionSmartContractService.deactivateSubscription(this.sub.sSmartContractAddress, this.sub.smartContractId);
     this.sub.approved = false;
   }
 
   private async activate() {
-    await this.subscriptionSmartContractService.activateSubscription(this.sub.smartContractId);
+    await this.subscriptionSmartContractService.activateSubscription(this.sub.sSmartContractAddress, this.sub.smartContractId);
     this.sub.approved = true;
   }
 
